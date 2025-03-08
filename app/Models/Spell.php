@@ -35,6 +35,6 @@ class Spell extends Model
 
     public function classes()
     {
-        return $this->belongsToMany(CharacterClass::class, 'class_spells');
+        return $this->belongsToMany(CharacterClass::class, 'class_spells', relatedPivotKey: 'class_id');
     }
 }

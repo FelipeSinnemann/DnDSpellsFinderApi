@@ -11,17 +11,27 @@ class SpellController extends Controller
     public function index()
     {
         $requestQuery = request()->query();
-        $nameQuery = null;
         
         if(isset($requestQuery['name'])){
             $nameQuery = '%'.$requestQuery['name'].'%';
             unset($requestQuery['name']);
         }
 
+        if(isset($requestQuery['class_id'])){
+            $classId = $requestQuery['class_id'];
+            unset($requestQuery['class_id']);
+        }
+
         $spellQuery = Spell::where($requestQuery);
 
-        if($nameQuery){
+        if(isset($nameQuery)){
             $spellQuery->where('name', 'like', $nameQuery);
+        }
+
+        if(isset($classId)){
+            $spellQuery->whereHas('classes', function($query) use ($classId){
+                $query->where('class_id', $classId);
+            });
         }
 
         $spells = $spellQuery->orderBy('name')->get();
